@@ -1,0 +1,53 @@
+version: "1.0.0"
+
+fields:
+  branch:
+    source: "git"
+    command: "git branch --show-current"
+  untracked_count:
+    source: "git"
+    command: "git ls-files --others --exclude-standard"
+    format: "count"
+    icon: "?"
+  staged_count:
+    source: "git"
+    command: "git diff --cached --name-only"
+    format: "count"
+    icon: "+"
+  modified_count:
+    source: "git"
+    command: "git diff --name-only"
+    format: "count"
+    icon: "~"
+  pr_status:
+    source: "gh"
+    command: "gh pr view --json state -q '.state'"
+    fallback: "local-only"
+  last_commit_type:
+    source: "git"
+    command: "git log -1 --format=%s"
+    format: "regex"
+    regex: "^(feat|fix|docs|refactor|test|chore|perf|ci|build)\\("
+    fallback: "unknown"
+  plugin_active:
+    source: "file"
+    path: "{base_path}/agent-conventional-commits-plugin/.claude-plugin/plugin.json"
+    key: "name"
+  pipeline_stage:
+    source: "file"
+    path: "{base_path}/agent-conventional-commits-plugin/research/.budget-state.json"
+    key: "phase"
+    fallback: "idle"
+
+display:
+  format: "{branch} | {modified_count}~ {staged_count}+ {untracked_count}? | PR:{pr_status} | [{last_commit_type}] {pipeline_stage}"
+  refresh_interval_seconds: 5
+
+guardrails:
+  warn_if:
+    - condition: "untracked_count > 5"
+      message: "Many untracked files"
+    - condition: "pr_status == 'local-only' AND staged_count > 0"
+      message: "Staged but no PR"
+    - condition: "last_commit_type == 'unknown'"
+      message: "Last commit not conventional"
