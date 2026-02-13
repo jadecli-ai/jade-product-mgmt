@@ -1,0 +1,74 @@
+name: "Roadmap Epic"
+description: "Multi-sprint initiative — broken into stories"
+title: "[Epic] "
+labels: ["epic", "roadmap"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Branch-Create Context
+        When Claude creates a branch from this epic, it MUST:
+        1. Use prefix `feat/<issue-number>-<slug>`
+        2. Break the epic into Story issues before starting work
+        3. Reference this epic in all child stories
+
+  - type: input
+    id: phase
+    attributes:
+      label: "Roadmap Phase"
+      description: "Which phase does this belong to?"
+      placeholder: "Phase 1: Foundation"
+    validations:
+      required: true
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: "Objective"
+      description: "What outcome does this epic deliver?"
+      placeholder: "Enable X so that Y can Z"
+    validations:
+      required: true
+
+  - type: textarea
+    id: stories
+    attributes:
+      label: "Stories (planned breakdown)"
+      description: "List the stories this epic will be broken into"
+      value: |
+        - [ ] Story 1: ...
+        - [ ] Story 2: ...
+        - [ ] Story 3: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Acceptance Criteria"
+      description: "How do we know this epic is DONE?"
+      value: |
+        - [ ] All stories completed and merged
+        - [ ] Integration tested end-to-end
+        - [ ] ROADMAP.md updated
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: "Dependencies"
+      description: "What must be done before this epic can start?"
+      placeholder: "Depends on #issue, external service, etc."
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      options:
+        - P0 — Critical path
+        - P1 — High
+        - P2 — Medium
+        - P3 — Low / nice-to-have
+    validations:
+      required: true

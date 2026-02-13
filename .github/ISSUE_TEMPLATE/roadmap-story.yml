@@ -1,0 +1,73 @@
+name: "Roadmap Story"
+description: "Deliverable unit of work — broken into tasks"
+title: "[Story] "
+labels: ["story", "roadmap"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Branch-Create Context
+        When Claude creates a branch from this story, it MUST:
+        1. Use prefix `feat/<issue-number>-<slug>`
+        2. Read the parent epic for full context
+        3. Break into Task issues if the story spans multiple files/domains
+        4. The acceptance criteria below are the PR checklist — every item must pass
+
+  - type: input
+    id: epic
+    attributes:
+      label: "Parent Epic"
+      description: "Link to the parent epic issue"
+      placeholder: "#1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "What does this story deliver?"
+      placeholder: "As a [user], I want [capability] so that [outcome]"
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "Tasks (planned breakdown)"
+      description: "Atomic work items for this story"
+      value: |
+        - [ ] Task 1: ...
+        - [ ] Task 2: ...
+        - [ ] Task 3: ...
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Acceptance Criteria"
+      description: "Checklist that becomes the PR merge gate"
+      value: |
+        - [ ] Implementation complete
+        - [ ] Tests passing
+        - [ ] No regressions
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_notes
+    attributes:
+      label: "Technical Notes"
+      description: "Key files, patterns, constraints Claude should know"
+      placeholder: "Affects lib/neon_docs/, uses entity_index schema, etc."
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: "Estimated Size"
+      options:
+        - S — Hours (< 1 day)
+        - M — Days (1-3 days)
+        - L — Sprint (3-5 days)
+        - XL — Multi-sprint (break this down further)
+    validations:
+      required: true

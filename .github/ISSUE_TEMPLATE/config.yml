@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: jadecli-ai/pm
+    url: https://github.com/jadecli-ai/pm
+    about: "Technical implementation repo (code, migrations, agents)"

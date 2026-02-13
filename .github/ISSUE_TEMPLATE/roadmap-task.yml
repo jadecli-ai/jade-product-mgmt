@@ -1,0 +1,64 @@
+name: "Roadmap Task"
+description: "Atomic work item — single branch, single PR"
+title: "[Task] "
+labels: ["task", "roadmap"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Branch-Create Context
+        When Claude creates a branch from this task, it MUST:
+        1. Read this issue body as the complete specification
+        2. Use prefix `feat/<issue-number>-<slug>` (or `fix/` for bug fixes)
+        3. Open a PR when done using the matching template
+        4. Every acceptance criterion below MUST be verified before marking PR ready
+
+  - type: input
+    id: parent
+    attributes:
+      label: "Parent Story or Epic"
+      description: "Link to parent issue"
+      placeholder: "#2"
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "What needs to be done"
+      description: "Specific, actionable description"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Acceptance Criteria (becomes PR checklist)"
+      description: "Each item must be verifiable. Claude checks these off in the PR."
+      value: |
+        - [ ] ...
+        - [ ] Tests pass
+        - [ ] No lint errors
+    validations:
+      required: true
+
+  - type: textarea
+    id: files
+    attributes:
+      label: "Key Files / Context"
+      description: "Files to read, patterns to follow, constraints"
+      placeholder: |
+        Read: pm/lib/neon_docs/config.py
+        Pattern: use create_entity() for new records
+        Constraint: must be idempotent
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: "Work Type"
+      options:
+        - Feature (new capability)
+        - Fix (bug or correction)
+        - Refactor (restructure, no behavior change)
+        - Docs (documentation)
+        - Chore (maintenance, deps, CI)
+    validations:
+      required: true
