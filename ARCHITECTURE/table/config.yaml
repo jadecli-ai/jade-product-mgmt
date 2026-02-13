@@ -1,0 +1,148 @@
+meta:
+  name: "jadecli-ai Product Management"
+  version: "1.0.0"
+
+components:
+  - id: "jade-product-mgmt"
+    name: "Product Management"
+    layer: "frontend"
+    type: "repo"
+    status: "active"
+    version: "1.0.0"
+    file_path: "ROADMAP.md"
+    depends_on: []
+    description: "Roadmap, templates, decision-tree workflows"
+
+  - id: "pm/agents/vp-product"
+    name: "VP Product"
+    layer: "middleware"
+    type: "agent"
+    status: "active"
+    version: "1.0.0"
+    file_path: "agents/vp-product.md"
+    depends_on: []
+    description: "Opus — orchestrates roadmap and strategic planning"
+
+  - id: "pm/agents/sdm"
+    name: "SDM"
+    layer: "middleware"
+    type: "agent"
+    status: "active"
+    version: "1.0.0"
+    file_path: "agents/sdm.md"
+    depends_on: ["pm/agents/vp-product"]
+    description: "Sonnet — sprint planning and task breakdown"
+
+  - id: "pm/agents/staff-engineer"
+    name: "Staff Engineer"
+    layer: "middleware"
+    type: "agent"
+    status: "active"
+    version: "1.0.0"
+    file_path: "agents/staff-engineer.md"
+    depends_on: ["pm/agents/sdm"]
+    description: "Sonnet — implementation and coding"
+
+  - id: "pm/agents/neon-specialist"
+    name: "Neon Specialist"
+    layer: "middleware"
+    type: "agent"
+    status: "active"
+    version: "1.0.0"
+    file_path: "agents/neon-specialist.md"
+    depends_on: []
+    description: "Document caching, semantic search, pgvector"
+
+  - id: "pm/lib/neon_docs"
+    name: "Neon Docs Library"
+    layer: "backend"
+    type: "library"
+    status: "active"
+    version: "0.1.0"
+    file_path: "pm/lib/neon_docs/"
+    depends_on: ["pm/neon-db"]
+    description: "Document caching with pgvector, migration runner, CLI"
+
+  - id: "pm/neon-db"
+    name: "Neon PostgreSQL"
+    layer: "data"
+    type: "database"
+    status: "active"
+    version: "18"
+    file_path: "pm/lib/neon_docs/migrations/"
+    depends_on: []
+    description: "Postgres 18, pgvector, entity_index, event sourcing"
+
+  - id: "pm/entity-index"
+    name: "Entity Index"
+    layer: "data"
+    type: "schema"
+    status: "active"
+    version: "1.0.0"
+    file_path: "pm/lib/neon_docs/migrations/V003_entity_index.sql"
+    depends_on: ["pm/neon-db"]
+    description: "Universal entity registry with CRUD event sourcing, UUIDv7"
+
+  - id: "pm/ci-neon-branch"
+    name: "Neon Branch-per-PR"
+    layer: "backend"
+    type: "workflow"
+    status: "active"
+    version: "1.0.0"
+    file_path: ".github/workflows/neon-branch.yml"
+    depends_on: ["pm/neon-db"]
+    description: "Create/delete Neon branches on PR lifecycle"
+
+  - id: "pm/ci-claude-code"
+    name: "Claude Code Action"
+    layer: "backend"
+    type: "workflow"
+    status: "active"
+    version: "1.0.0"
+    file_path: ".github/workflows/claude.yml"
+    depends_on: []
+    description: "@claude mentions trigger Claude Code on issues/PRs"
+
+  - id: "tools/check-secrets"
+    name: "Secrets Audit"
+    layer: "backend"
+    type: "script"
+    status: "active"
+    version: "1.0.0"
+    file_path: "scripts/check-secrets.py"
+    depends_on: []
+    description: "Check env/GitHub secrets availability without exposing values"
+
+  - id: "tools/task-queue"
+    name: "Task Queue"
+    layer: "backend"
+    type: "script"
+    status: "active"
+    version: "1.0.0"
+    file_path: "scripts/queue.py"
+    depends_on: []
+    description: "Cross-session persistent task queue (JSONL)"
+
+display:
+  columns:
+    - { field: "id", label: "ID", width: 25 }
+    - { field: "name", label: "Component", width: 25 }
+    - { field: "layer", label: "Layer", width: 12 }
+    - { field: "status", label: "Status", width: 10 }
+    - { field: "version", label: "Version", width: 8 }
+  default_sort: { field: "layer", direction: "asc" }
+  filters:
+    - { field: "layer", options: ["all", "frontend", "middleware", "backend", "data"] }
+    - { field: "type", options: ["all", "repo", "agent", "library", "database", "schema", "workflow", "script"] }
+
+colors:
+  status:
+    active: "#3fb950"
+    in_progress: "#d29922"
+    pending: "#8b949e"
+    deprecated: "#f85149"
+  layer:
+    frontend: "#58a6ff"
+    middleware: "#bc8cff"
+    backend: "#3fb950"
+    data: "#d29922"

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jadecli-ai Product Management — Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 2rem; }
+  h1 { color: #58a6ff; margin-bottom: 0.5rem; }
+  .meta { color: #8b949e; margin-bottom: 1.5rem; }
+  .filters { margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .filter-btn { background: #161b22; color: #c9d1d9; border: 1px solid #30363d; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .filter-btn:hover { background: #21262d; }
+  .filter-btn.active { background: #21262d; border-color: #58a6ff; color: #58a6ff; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 0.6rem; background: #161b22; border-bottom: 2px solid #30363d; color: #8b949e; font-size: 0.8rem; text-transform: uppercase; cursor: pointer; }
+  th:hover { color: #58a6ff; }
+  td { padding: 0.6rem; border-bottom: 1px solid #21262d; font-size: 0.9rem; }
+  tr:hover { background: #161b22; }
+  tr.hidden { display: none; }
+  code { background: #161b22; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<h1>jadecli-ai Product Management</h1>
+<p class="meta">v1.0.0 — 12 components</p>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="backend" style="border-color:#3fb950">backend</button>
+        <button class="filter-btn" data-filter="data" style="border-color:#d29922">data</button>
+        <button class="filter-btn" data-filter="frontend" style="border-color:#58a6ff">frontend</button>
+        <button class="filter-btn" data-filter="middleware" style="border-color:#bc8cff">middleware</button>
+
+</div>
+
+<table id="arch-table">
+<thead>
+  <tr>
+    <th data-sort="id">ID</th>
+    <th data-sort="name">Component</th>
+    <th data-sort="layer">Layer</th>
+    <th data-sort="status">Status</th>
+    <th data-sort="version">Ver</th>
+    <th>Path</th>
+    <th>Description</th>
+    <th>Dependencies</th>
+  </tr>
+</thead>
+<tbody>
+
+        <tr data-layer="backend" data-type="workflow">
+            <td><code>pm/ci-claude-code</code></td>
+            <td><strong>Claude Code Action</strong></td>
+            <td><span style="color:#3fb950">backend</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>.github/workflows/claude.yml</code></td>
+            <td>@claude mentions trigger Claude Code on issues/PRs</td>
+            <td><small>—</small></td>
+        </tr>
+        <tr data-layer="backend" data-type="workflow">
+            <td><code>pm/ci-neon-branch</code></td>
+            <td><strong>Neon Branch-per-PR</strong></td>
+            <td><span style="color:#3fb950">backend</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>.github/workflows/neon-branch.yml</code></td>
+            <td>Create/delete Neon branches on PR lifecycle</td>
+            <td><small>pm/neon-db</small></td>
+        </tr>
+        <tr data-layer="backend" data-type="library">
+            <td><code>pm/lib/neon_docs</code></td>
+            <td><strong>Neon Docs Library</strong></td>
+            <td><span style="color:#3fb950">backend</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>0.1.0</td>
+            <td><code>pm/lib/neon_docs/</code></td>
+            <td>Document caching with pgvector, migration runner, CLI</td>
+            <td><small>pm/neon-db</small></td>
+        </tr>
+        <tr data-layer="backend" data-type="script">
+            <td><code>tools/check-secrets</code></td>
+            <td><strong>Secrets Audit</strong></td>
+            <td><span style="color:#3fb950">backend</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>scripts/check-secrets.py</code></td>
+            <td>Check env/GitHub secrets availability without exposing values</td>
+            <td><small>—</small></td>
+        </tr>
+        <tr data-layer="backend" data-type="script">
+            <td><code>tools/task-queue</code></td>
+            <td><strong>Task Queue</strong></td>
+            <td><span style="color:#3fb950">backend</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>scripts/queue.py</code></td>
+            <td>Cross-session persistent task queue (JSONL)</td>
+            <td><small>—</small></td>
+        </tr>
+        <tr data-layer="data" data-type="schema">
+            <td><code>pm/entity-index</code></td>
+            <td><strong>Entity Index</strong></td>
+            <td><span style="color:#d29922">data</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>pm/lib/neon_docs/migrations/V003_entity_index.sql</code></td>
+            <td>Universal entity registry with CRUD event sourcing, UUIDv7</td>
+            <td><small>pm/neon-db</small></td>
+        </tr>
+        <tr data-layer="data" data-type="database">
+            <td><code>pm/neon-db</code></td>
+            <td><strong>Neon PostgreSQL</strong></td>
+            <td><span style="color:#d29922">data</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>18</td>
+            <td><code>pm/lib/neon_docs/migrations/</code></td>
+            <td>Postgres 18, pgvector, entity_index, event sourcing</td>
+            <td><small>—</small></td>
+        </tr>
+        <tr data-layer="frontend" data-type="repo">
+            <td><code>jade-product-mgmt</code></td>
+            <td><strong>Product Management</strong></td>
+            <td><span style="color:#58a6ff">frontend</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>ROADMAP.md</code></td>
+            <td>Roadmap, templates, decision-tree workflows</td>
+            <td><small>—</small></td>
+        </tr>
+        <tr data-layer="middleware" data-type="agent">
+            <td><code>pm/agents/neon-specialist</code></td>
+            <td><strong>Neon Specialist</strong></td>
+            <td><span style="color:#bc8cff">middleware</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>agents/neon-specialist.md</code></td>
+            <td>Document caching, semantic search, pgvector</td>
+            <td><small>—</small></td>
+        </tr>
+        <tr data-layer="middleware" data-type="agent">
+            <td><code>pm/agents/sdm</code></td>
+            <td><strong>SDM</strong></td>
+            <td><span style="color:#bc8cff">middleware</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>agents/sdm.md</code></td>
+            <td>Sonnet — sprint planning and task breakdown</td>
+            <td><small>pm/agents/vp-product</small></td>
+        </tr>
+        <tr data-layer="middleware" data-type="agent">
+            <td><code>pm/agents/staff-engineer</code></td>
+            <td><strong>Staff Engineer</strong></td>
+            <td><span style="color:#bc8cff">middleware</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>agents/staff-engineer.md</code></td>
+            <td>Sonnet — implementation and coding</td>
+            <td><small>pm/agents/sdm</small></td>
+        </tr>
+        <tr data-layer="middleware" data-type="agent">
+            <td><code>pm/agents/vp-product</code></td>
+            <td><strong>VP Product</strong></td>
+            <td><span style="color:#bc8cff">middleware</span></td>
+            <td><span style="color:#3fb950">active</span></td>
+            <td>1.0.0</td>
+            <td><code>agents/vp-product.md</code></td>
+            <td>Opus — orchestrates roadmap and strategic planning</td>
+            <td><small>—</small></td>
+        </tr>
+</tbody>
+</table>
+
+<script>
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('#arch-table tbody tr').forEach(row => {
+      row.classList.toggle('hidden', filter !== 'all' && row.dataset.layer !== filter);
+    });
+  });
+});
+
+document.querySelectorAll('th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    const field = th.dataset.sort;
+    const tbody = document.querySelector('#arch-table tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const dir = th.classList.contains('sort-asc') ? -1 : 1;
+    document.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+    th.classList.add(dir === 1 ? 'sort-asc' : 'sort-desc');
+    rows.sort((a, b) => {
+      const idx = Array.from(th.parentNode.children).indexOf(th);
+      return a.children[idx].textContent.localeCompare(b.children[idx].textContent) * dir;
+    });
+    rows.forEach(r => tbody.appendChild(r));
+  });
+});
+</script>
+</body>
+</html>
